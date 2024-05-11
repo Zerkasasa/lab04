@@ -85,20 +85,20 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 ```bush
 cd ../formatter_ex_lib
  cat>> CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.22.1)
-
-project(formatter_ex_lib)
-
-set(CMAKE_CXX_STANDART 20)
-set(CMAKE_CXX_STANDART_REQUIRED ON)
-set(CMAKE_CURRENT_SOURCE_DIR /home/vboxuser/Zerkasasa/workspace/projects/lab03/formatter_ex_lib)
-
-add_library(formatter_ex STATIC ${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex.cpp)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/formatter_lib)
-
-target_link_libraries(formatter_ex formatter)
+>cmake_minimum_required(VERSION 3.22.1)
+>
+>project(formatter_ex_lib)
+>
+>set(CMAKE_CXX_STANDART 20)
+>set(CMAKE_CXX_STANDART_REQUIRED ON)
+>set(CMAKE_CURRENT_SOURCE_DIR /home/vboxuser/Zerkasasa/workspace/projects/lab03/formatter_ex_lib)
+>
+>add_library(formatter_ex STATIC ${CMAKE_CURRENT_SOURCE_DIR}/formatter_ex.cpp)
+>
+>include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+>include_directories(${CMAKE_CURRENT_SOURCE_DIR}/formatter_lib)
+>
+>target_link_libraries(formatter_ex formatter)
 > EOF
 
 cmake -H. -B build
@@ -160,22 +160,22 @@ cd ../hello_world_application
 
 cat>> CMakeLists.txt << EOF
 > cmake_minimum_required(VERSION 3.22.1)
-project(hello_world)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-add_executable(hello_world hello_world.cpp)
-
-add_library(formatter_lib STATIC ../formatter_lib/formatter.cpp)
-add_library(formatter_ex_lib STATIC ../formatter_ex_lib/formatter_ex.cpp)
-
-
-target_include_directories(formatter_lib PUBLIC ../formatter_lib)
-target_include_directories(formatter_ex_lib PUBLIC ../formatter_ex_lib ../formatter_lib)
-target_include_directories(hello_world PUBLIC ../formatter_ex_lib ../formatter_lib)
-
-target_link_libraries(hello_world formatter_ex_lib formatter_lib)
+>project(hello_world)
+>
+>set(CMAKE_CXX_STANDARD 20)
+>set(CMAKE_CXX_STANDARD_REQUIRED ON)
+>
+>add_executable(hello_world hello_world.cpp)
+>
+>add_library(formatter_lib STATIC ../formatter_lib/formatter.cpp)
+>add_library(formatter_ex_lib STATIC ../formatter_ex_lib/formatter_ex.cpp)
+>
+>
+>target_include_directories(formatter_lib PUBLIC ../formatter_lib)
+>target_include_directories(formatter_ex_lib PUBLIC ../formatter_ex_lib ../formatter_lib)
+>target_include_directories(hello_world PUBLIC ../formatter_ex_lib ../formatter_lib)
+>
+>target_link_libraries(hello_world formatter_ex_lib formatter_lib)
 > EOF
 
 
@@ -236,28 +236,24 @@ cd ../hello_world_application
 
 cat >> ./CMakeLists.txt << EOF
 > cmake_minimum_required(VERSION 3.22.1)
-
-project(solver)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-
-add_library(formatter_lib STATIC ../formatter_lib/formatter.cpp)
-add_library(formatter_ex_lib STATIC ../formatter_ex_lib/formatter_ex.cpp)
-add_library(solver_lib STATIC ../solver_lib/solver.cpp)
-
-include_directories(    ../formatter_lib
-                        ../formatter_ex_lib
-                        ../solver_lib)
-
-
-add_executable(solver equation.cpp)
-
-target_link_libraries(solver    solver_lib 
-                                formatter_ex_lib 
-                                formatter_lib)
+>
+>project(solver)
+>
+>set(CMAKE_CXX_STANDARD 20)
+>set(CMAKE_CXX_STANDARD_REQUIRED ON)
+>
+>
+>
+>add_library(formatter_lib STATIC ../formatter_lib/formatter.cpp)
+>add_library(formatter_ex_lib STATIC ../formatter_ex_lib/formatter_ex.cpp)
+>add_library(solver_lib STATIC ../solver_lib/solver.cpp)
+>
+>include_directories(/solver_lib /formatter_lib /formatter_ex_lib)
+>
+>
+>add_executable(solver equation.cpp)
+>
+>target_link_libraries(solver ${formatter} ${formatter_ex} ${solver_lib})
 > EOF
 
 cmake -H. -B build
@@ -303,15 +299,11 @@ add_library(formatter_lib STATIC ../formatter_lib/formatter.cpp)
 add_library(formatter_ex_lib STATIC ../formatter_ex_lib/formatter_ex.cpp)
 add_library(solver_lib STATIC ../solver_lib/solver.cpp)
 
-include_directories(	../formatter_lib
-			../formatter_ex_lib
-			../solver_lib)
+include_directories(/solver_lib /formatter_lib /formatter_ex_lib)
 
 
 add_executable(solver equation.cpp)
 
-target_link_libraries(solver 	solver_lib 
-				formatter_ex_lib 
-				formatter_lib)
+target_link_libraries(solver ${formatter} ${formatter_ex} ${solver_lib
 
 ```
