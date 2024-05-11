@@ -1,326 +1,193 @@
-## Laboratory work II
+## Laboratory work III
 
+Данная лабораторная работа посвещена изучению систем автоматизации сборки проекта на примере **CMake**
 
-### Part I
-
-1. **Создайте пустой репозиторий на сервисе github.com (или gitlab.com, или bitbucket.com).**
-2. **Выполните инструкцию по созданию первого коммита на странице репозитория, созданного на предыдещем шаге.**
-
-
-```bash
-	
-mkdir lab02 && cd lab02
-git init
-git remote add origin git@github.com:Zerkasasa/lab02.git
-git pull origin main
-	
-```
-	
-	
-3. **Создайте файл `hello_world.cpp` в локальной копии репозитория (который должен был появиться на шаге 2). Реализуйте программу "Hello world" на языке C++ используя плохой стиль кода. Например, после заголовочных файлов вставьте строку `using namespace std;`.**
-
-
-```bash
-cat > hello_world.cpp << EOF
+```sh
+$ open https://cmake.org/
 ```
 
-```cpp
-#include <iostream>
+## Tasks
 
-using namespace std;
+- [ ] 1. Создать публичный репозиторий с названием **lab03** на сервисе **GitHub**
+- [ ] 2. Ознакомиться со ссылками учебного материала
+- [ ] 3. Выполнить инструкцию учебного материала
+- [ ] 4. Составить отчет и отправить ссылку личным сообщением в **Slack**
 
+## Tutorial
 
-int main() 
-{
-
-cout << "Hello,World! " << endl;
-
-return 0;
-}
+```sh
+$ export GITHUB_USERNAME=<имя_пользователя>
 ```
 
-```bash
+```sh
+$ cd ${GITHUB_USERNAME}/workspace
+$ pushd .
+$ source scripts/activate
+```
+
+```sh
+$ git clone https://github.com/${GITHUB_USERNAME}/lab02.git projects/lab03
+$ cd projects/lab03
+$ git remote remove origin
+$ git remote add origin https://github.com/${GITHUB_USERNAME}/lab03.git
+```
+
+```sh
+$ g++ -std=c++11 -I./include -c sources/print.cpp
+$ ls print.o
+$ nm print.o | grep print
+$ ar rvs print.a print.o
+$ file print.a
+$ g++ -std=c++11 -I./include -c examples/example1.cpp
+$ ls example1.o
+$ g++ example1.o print.a -o example1
+$ ./example1 && echo
+```
+
+```sh
+$ g++ -std=c++11 -I./include -c examples/example2.cpp
+$ nm example2.o
+$ g++ example2.o print.a -o example2
+$ ./example2
+$ cat log.txt && echo
+```
+
+```sh
+$ rm -rf example1.o example2.o print.o
+$ rm -rf print.a
+$ rm -rf example1 example2
+$ rm -rf log.txt
+```
+
+```sh
+$ cat > CMakeLists.txt <<EOF
+cmake_minimum_required(VERSION 3.4)
+project(print)
 EOF
 ```
 
-
-4. **Добавьте этот файл в локальную копию репозитория.**
-
-
-``` bash
-
-git add hello_world.cpp
-
+```sh
+$ cat >> CMakeLists.txt <<EOF
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+EOF
 ```
 
-
-5. **Закоммитьте изменения с *осмысленным* сообщением.**
-
-
-```bash 
-
-git commit -m "add hello_world.cpp"
-
+```sh
+$ cat >> CMakeLists.txt <<EOF
+add_library(print STATIC \${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)
+EOF
 ```
 
-
-6. **Изменитьте исходный код так, чтобы программа через стандартный поток ввода запрашивалось имя пользователя. А в стандартный поток вывода печаталось сообщение `Hello world from @name`, где `@name` имя пользователя.**
-
-
-```bash
-cat > hello_world.cpp << EOF
-```
-```cpp 
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-int main()
-{
-    string name;
-    
-    getline(cin, name);
-    
-    
-    cout<<"Hello World from " << name;
-
-    return 0;
-}
+```sh
+$ cat >> CMakeLists.txt <<EOF
+include_directories(\${CMAKE_CURRENT_SOURCE_DIR}/include)
+EOF
 ```
 
-
-7. **Закоммитьте новую версию программы.** Почему не надо добавлять файл повторно `git add`?
-
-
-```bash
-
- git add hello_world.cpp
- git commit -m "add hello_world v2.0"
-
+```sh
+$ cmake -H. -B_build
+$ cmake --build _build
 ```
 
+```sh
+$ cat >> CMakeLists.txt <<EOF
 
-8. **Запуште изменения в удалёный репозиторий.**
-
-
-```bash
-
-git push origin main
-
+add_executable(example1 \${CMAKE_CURRENT_SOURCE_DIR}/examples/example1.cpp)
+add_executable(example2 \${CMAKE_CURRENT_SOURCE_DIR}/examples/example2.cpp)
+EOF
 ```
 
+```sh
+$ cat >> CMakeLists.txt <<EOF
 
-10. **Проверьте, что история коммитов доступна в удалёный репозитории.**
-
-
-![image](https://github.com/Zerkasasa/lab02/assets/144800462/e5b2d6ad-45b0-4fce-ae6f-77096f18fb22)
-
-
-
-
-### Part II
-**Note:** *Работать продолжайте с теми же репоззиториями, что и в первой части задания.*
-
-
-1. **В локальной копии репозитория создайте локальную ветку `patch1`.**
-
-
-```bash
-
-git checkout -b patch1
-
+target_link_libraries(example1 print)
+target_link_libraries(example2 print)
+EOF
 ```
 
-
-2. **Внесите изменения в ветке `patch1` по исправлению кода и избавления от `using namespace std;`.**
-
-
-```bash
-cat > hello_world.cpp << EOF
+```sh
+$ cmake --build _build
+$ cmake --build _build --target print
+$ cmake --build _build --target example1
+$ cmake --build _build --target example2
 ```
 
-```cpp
-#include <iostream>
-#include <string>
-
-
-int main()
-{
-    std::string name;
-
-    getline(std::cin, name);
-
-
-    std::cout<<"Hello World from " << name;
-
-    return 0;
-}
+```sh
+$ ls -la _build/libprint.a
+$ _build/example1 && echo
+hello
+$ _build/example2
+$ cat log.txt && echo
+hello
+$ rm -rf log.txt
 ```
 
-
-3. **commit, push локальную ветку в удалённый репозиторий.**
-
-
-```bash 
-
-git add hello_world.cpp
-git commit -m "hello_world.cpp without using namespace std;"
-git push origin patch1
-
+```sh
+$ git clone https://github.com/tp-labs/lab03 tmp
+$ mv -f tmp/CMakeLists.txt .
+$ rm -rf tmp
 ```
 
-
-4. **Проверьте, что ветка `patch1` доступна в удалёный репозитории.**
-
-
-![image](https://github.com/Zerkasasa/lab02/assets/144800462/e5b2d6ad-45b0-4fce-ae6f-77096f18fb22)
-
-5. **Создайте pull-request `patch1 -> master`.**
-
-
-6. **В локальной копии в ветке `patch1` добавьте в исходный код комментарии.**
-
-
-```bash
-cat > hello_world.cpp << EOF
+```sh
+$ cat CMakeLists.txt
+$ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
+$ cmake --build _build --target install
+$ tree _install
 ```
 
-```cpp
-#include <iostream>
-#include <string>
-
-
-int main()
-{
-    std::string name;
-
-    //name input
-    getline(std::cin, name);
-
-    //name output
-    std::cout<<"Hello World from " << name;
-
-    return 0;
-}
-
+```sh
+$ git add CMakeLists.txt
+$ git commit -m"added CMakeLists.txt"
+$ git push origin master
 ```
 
+## Report
 
-7. **commit**, **push**.
-```bash
-git add hello_world.cpp
-git commit -m "Comments"
-git push origin patch1
-```
-8. **Проверьте, что новые изменения есть в созданном на **шаге 5_pull-request**
-
-
-![VirtualBox_ubuntu_11_05_2024_17_22_43](https://github.com/Zerkasasa/lab02/assets/144800462/3553c640-83b2-4317-9351-276f4b347aeb)
-
-
-9. **удалённый репозитории выполните  слияние PR `patch1 -> master` и удалите ветку `patch1` в удаленном репозитории.**
-
-10. Локально выполните **pull**.
-
-
-```bash
-
-git checkout main
-git pull origin main
-
+```sh
+$ popd
+$ export LAB_NUMBER=03
+$ git clone https://github.com/tp-labs/lab${LAB_NUMBER} tasks/lab${LAB_NUMBER}
+$ mkdir reports/lab${LAB_NUMBER}
+$ cp tasks/lab${LAB_NUMBER}/README.md reports/lab${LAB_NUMBER}/REPORT.md
+$ cd reports/lab${LAB_NUMBER}
+$ edit REPORT.md
+$ gist REPORT.md
 ```
 
+## Homework
 
-11. С помощью команды **git log** просмотрите историю в локальной версии ветки `master`.
+Представьте, что вы стажер в компании "Formatter Inc.".
+### Задание 1
+Вам поручили перейти на систему автоматизированной сборки **CMake**.
+Исходные файлы находятся в директории [formatter_lib](formatter_lib).
+В этой директории находятся файлы для статической библиотеки *formatter*.
+Создайте `CMakeList.txt` в директории [formatter_lib](formatter_lib),
+с помощью которого можно будет собирать статическую библиотеку *formatter*.
 
+### Задание 2
+У компании "Formatter Inc." есть перспективная библиотека,
+которая является расширением предыдущей библиотеки. Т.к. вы уже овладели
+навыком созданием `CMakeList.txt` для статической библиотеки *formatter*, ваш 
+руководитель поручает заняться созданием `CMakeList.txt` для библиотеки 
+*formatter_ex*, которая в свою очередь использует библиотеку *formatter*.
 
-```bash
+### Задание 3
+Конечно же ваша компания предоставляет примеры использования своих библиотек.
+Чтобы продемонстрировать как работать с библиотекой *formatter_ex*,
+вам необходимо создать два `CMakeList.txt` для двух простых приложений:
+* *hello_world*, которое использует библиотеку *formatter_ex*;
+* *solver*, приложение которое испольует статические библиотеки *formatter_ex* и *solver_lib*.
 
-git log
+**Удачной стажировки!**
 
-```
-![image](https://github.com/Zerkasasa/lab02/assets/144800462/7cfec168-3ce5-41f7-a435-065fba37988a)
-
-
-12. Удалите локальную ветку `patch1`.
-
-
-```bash
-
-git branch -D patch1
-Deleted branch patch1 (was cf9b38f).
-
-
-```
-
-
-
-
-### Part III
-**Note:** *Работать продолжайте с теми же репоззиториями, что и в первой части задания.*
-
-
-1. **Создайте новую локальную ветку `patch2`.**
-
-
-```bash
-
-git checkout -b patch2
-```
-
-
-2. **Измените *code style* с помощью утилиты [**clang-format**](http://clang.llvm.org/docs/ClangFormat.html). Например, используя опцию `-style=Mozilla`.**
-
-
-```bash
-
-clang-format  -style=Mozilla hello_world.cpp 
+## Links
+- [Основы сборки проектов на С/C++ при помощи CMake](https://eax.me/cmake/)
+- [CMake Tutorial](http://neerc.ifmo.ru/wiki/index.php?title=CMake_Tutorial)
+- [C++ Tutorial - make & CMake](https://www.bogotobogo.com/cplusplus/make.php)
+- [Autotools](http://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html)
+- [CMake](https://cgold.readthedocs.io/en/latest/index.html)
 
 ```
-
-
-3. **commit, push, создайте pull-request `patch2 -> master`**.
-
-
-```bash
-
-git add hello_world.cpp
-git commit -m "Mozilla codestyle"
-git push origin patch2
-
+Copyright (c) 2015-2021 The ISC Authors
 ```
-
-
-4. **В ветке "master" в удаленном репозитории измените комментарии, например, расставьте знаки препинания, переведите комментарии на другой язык.**
-
-
-5. **Убедитесь, что в pull-request появились 'конфликтны'.**
-
-
-6. **Для этого локально выполните pull + rebase (точную последовательность команд, следует узнать самостоятельно). Исправьте конфликты.**
-
-
-```bash
-
-git pull origin main
-git rebase main
-
-```
-
-
-7. **Сделайте *force push* в ветку `patch2`**
-
-```bash
-
-git push --force origin patch2
-
-```
-
-
-8. **Убедитель, что в pull-request пропали конфликтны.**
-
-
-9. **Вмержите pull-request `patch2 -> master`.**
-
-
