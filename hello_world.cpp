@@ -1,12 +1,16 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-
-int main() 
+int main()
 {
+    string name;
+    
+    getline(cin, name);
+    
+    
+    cout<<"Hello World from " << name;
 
-cout << "Hello,World! " << endl;
-
-return 0;
+    return 0;
 }
