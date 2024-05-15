@@ -1,0 +1,14 @@
+language: cpp
+script:
+- cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
+- cmake --build _build
+- cmake --build _build --target install
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake
+      - cmake-data      
+      secure: "DxKyfrGH4T1PJz66B5md9M27kitK+vNyoX3WvRZDBvDJ4ASgr3rygVoXhoqYF6WYnbheyWuhqVoD7WxoLPjea21QKocod1y/dDZDfJZGKQ4466abr2w83wwgPPKSLNyUzqKO780ffgGhAk/aUPcUoJi/fAh1vqZp4O2YSBqg7vnfplfI9deYdMIV1fInOhX7h5dsA38egj4owJToOnqD7KLTMBghjtkRaYHmQDN0Ht2HNPHYeJfzbX9wJyFbmq/XTO0sOv/H5WQF0lU6DF9zI1wUTPYzVXH8h58UUOi1WvtouuEEzD5/aJPp14ng5xjp/4BNz1ZW14K/vlxuHFy6a41r/daB5SGkvET7sUPHTd09ux0q+AzgmK3spLBld6VlPV3cPMDOBOsJdEmmJ46vNRqPGY4pATsAmOKUfnHkTbN8JTIw/b8xQ7/t4DKUaHvp/LlJTCqFejHNnGTNv5gpUbhG+SmC5w5LNpCaM5q6K5hRsC5Js+7U2yIgs9Q37jAXMMLr+PE7+YlZWekzDiKYFetxkeG48QEDBamkJQ0IOQBgtLT/5JwKacPj3ei2eLPII5ahrNyzPFGLoJ2LOTk39LKU/iIpffIhwgyBc20pvdi4HMUdOZMUyRbHApQQuGAc0B+eoMsuJXPyaytTtMHg9zwnb50E4mBc69RPpokVbDE="
+
